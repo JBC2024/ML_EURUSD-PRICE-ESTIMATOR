@@ -17,9 +17,11 @@ The objective of the project is to estimate the closing price of the EUR-USD cur
     - Volume: Number of assets that have been bought or sold within the timeframe
 
 🛠 Solution:
+
     - Solution based on Deep Learning models (RNN, LSTM, GRU...)
 
 🛠 Directory info:
+
     - src 
         - data: Data directory
             - history: Evaluation results

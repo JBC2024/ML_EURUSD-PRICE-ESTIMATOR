@@ -25,6 +25,8 @@ The objective of the project is to estimate the closing price of the EUR-USD cur
     - src 
         - data: Data directory
             - history: Evaluation results
+            - data_sample: data sample files
         - models: Saved models
         - notebooks: ipynb files
+            -result_notebooks: Notebook with all execution
         - utils: functions and utils (py files)

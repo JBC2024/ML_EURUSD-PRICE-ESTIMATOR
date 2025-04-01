@@ -4,8 +4,8 @@
 
 🎯 Objetivo del Proyecto
 
-XXXX
+The objective of the project is to estimate the closing price of the EUR-USD currency exchange based on the closing price of the previous hours.
 
-🛠 Entorno Virtual y Dependencias
+🛠 Dataset Info
 
-XXXX
+- Downloadable under subscription

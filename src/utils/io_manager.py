@@ -23,6 +23,12 @@ def exist_file(filename):
 # -------------------- Data Methods  --------------------
 # -------------------------------------------------------
 def read_data(path=vrb.DATASOURCE_PATH):
+    """
+    Read data from file
+
+    Args:
+    path (str): Filename
+    """
     df = pd.read_csv(path, parse_dates=[vrb.COLUMN_DATE_ORIGINAL], index_col=vrb.COLUMN_DATE_ORIGINAL)
     return df
 
@@ -30,9 +36,19 @@ def read_data(path=vrb.DATASOURCE_PATH):
 # -------------------- Fit Info Methods  --------------------
 # -----------------------------------------------------------
 def save_fit_info(df):
+    """
+    Write fit information to file
+
+    Args:
+    df (dataframe): Data
+    """
     df.to_csv(vrb.FIT_RESULTS_PATH, index=False)
 
 def read_fit_info_dataset():
+    """
+    Read fit information from file
+
+    """
     if not exist_file(vrb.FIT_RESULTS_PATH):
         df_info = pd.DataFrame({}, columns=vrb.COLUMNS_INFO_ARRAY)
         save_fit_info(df_info)
@@ -41,6 +57,20 @@ def read_fit_info_dataset():
     return df_info
 
 def add_fit_info(model_name, model_state, columns, start_time, total_epochs, epochs_completed, valid_loss, valid_mae, valid_rmse):
+    """
+    Add fit information and write to file
+
+    Args:
+    model_name (str): Model name
+    model_state (str): Model status (loaded, compiled)
+    columns (array): List of features used in training
+    start_time (datetime): Fit start time
+    total_epochs (int): Total configured epochs
+    epochs_completed (int): Total completed epochs
+    valid_loss (double): Validation loss
+    valid_mae (double): Validation MAE
+    valid_rmse (double): Validation RMSE
+    """
     dt_now = grl.get_datetime()
     total = dt_now - start_time
     
@@ -67,9 +97,21 @@ def add_fit_info(model_name, model_state, columns, start_time, total_epochs, epo
 # -------------------- Model Methods  --------------------
 # --------------------------------------------------------
 def get_model_name(filename):
+    """
+    Get model full path with pkl extension
+
+    Args:
+    filename (str): Model filename
+    """
     return f"{vrb.SAVED_MODELS_DIRECTORY}{filename}.pkl"
 
 def read_model(filename):
+    """
+    Read model from file
+
+    Args:
+    filename (str): Model filename
+    """
     loaded_model = None
     if exist_file(get_model_name(filename)):
         with open(get_model_name(filename), 'rb') as file:
@@ -77,5 +119,12 @@ def read_model(filename):
     return loaded_model
     
 def save_model(model, filename):
+    """
+    Write model to file
+
+    Args:
+    model (object):Model
+    filename (str): Model filename
+    """
     with open(get_model_name(filename), 'wb') as file:
         pickle.dump(model, file)

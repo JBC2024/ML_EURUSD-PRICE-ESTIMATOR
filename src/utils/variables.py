@@ -1,6 +1,6 @@
 RANDOM_SEED = 808
 
-DATASOURCE_PATH = "../data/EURUSD-H1-201701_202502.csv"
+DATASOURCE_PATH = "../data/data_sample/EURUSD-H1-201701_202502.csv"
 FIT_RESULTS_PATH = "../data/history/fit_info.csv"
 TEST_RESULTS_PATH = "../data/history/test_info.csv"
 SAVED_MODELS_DIRECTORY = "../models/"

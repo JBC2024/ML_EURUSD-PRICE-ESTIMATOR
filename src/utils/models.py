@@ -7,6 +7,16 @@ import tensorflow as tf
 tf.random.set_seed(vrb.RANDOM_SEED)
 
 def get_timeseries_dataset_from_array(data_set, seq_length, prediction_interval, shuffle=False, seed=None):
+    """
+    Get Time Series dataset divided into batches
+
+    Args:
+    data_set (DataFrame): Original dataset
+    seq_length (str): Sequence length
+    prediction_interval (int): Number of predicted items
+    shuffle (bool): True if shuffle data
+    seed (int): Seed to replicate results
+    """
     
     targets = data_set[vrb.COLUMN_CLOSE][seq_length:]
     if prediction_interval > 1:
@@ -28,6 +38,16 @@ def get_timeseries_dataset_from_array(data_set, seq_length, prediction_interval,
     return ds
 
 def get_timeseries_train_valid_test_sets(dataframe, columns, prediction_interval, seq_length=vrb.DEFAULT_SEQUENCE_LENGTH):
+    """
+    Get Time Series train, validation and test dataframes divided into batches
+
+    Args:
+    dataframe (DataFrame): Original dataset
+    columns (array): Columns
+    prediction_interval (int): Number of predicted items
+    seq_length (str): Sequence length
+    """
+    
     tf.random.set_seed(vrb.RANDOM_SEED)
 
     df_train, df_valid, df_test = dat.get_train_valid_test_sets(dataframe, columns)
@@ -40,6 +60,18 @@ def get_timeseries_train_valid_test_sets(dataframe, columns, prediction_interval
     
 
 def add_model(series, name, model_type, prediction_interval, columns, units=1, seq_length=vrb.DEFAULT_SEQUENCE_LENGTH):
+    """
+    Create model and add to series
+
+    Args:
+    series (serie): Series to add
+    name (str): Model name
+    model_type(str): Model type (Dense, RNN, LSTM, GRU)
+    prediction_interval (int): Number of predicted items
+    columns (array): Columns
+    units (int): Main layer number of units
+    seq_length (str): Sequence length
+    """
     tf.random.set_seed(vrb.RANDOM_SEED)
 
     layer = None
@@ -69,12 +101,30 @@ def add_model(series, name, model_type, prediction_interval, columns, units=1, s
     return model
 
 
-def model_compile(model, learning_rate):
+def model_compile(model, learning_rate=0.02):
+    """
+    Model compilation
+
+    Args:
+    model (object): Model to compile
+    learning_rate: Model compilation learning rate. Default=0.02
+    """
     opt = tf.keras.optimizers.SGD(learning_rate=learning_rate, momentum=0.9)
     model.compile(loss=tf.keras.losses.Huber(), optimizer=opt, metrics=["mae","root_mean_squared_error"])
 
 def model_fit(model, train_set, valid_set, epochs, patience, save_to=""):
-    patience = int(epochs//10) if patience == None else patience #TODO::  Si no nos dan "paciencia" el 10% de las épocas y tiene que ser mayor que 10
+    """
+    Model fitting
+
+    Args:
+    model (object): Model to compile
+    train_set (Dataframe): Train dataframe
+    valid_set (Dataframe): Validation dataframe
+    epochs (int): Number of fit epochs
+    patience (int): Fitting patience. If None and epochs < 100, patience=epochs. If None and epochs >= 100, patience = 10% epochs
+    save_to (str): If no blank, filename for model writting
+    """
+    patience = int(epochs//10) if patience == None else patience 
     if epochs < 100: 
         patience = epochs
     early_stopping_cb = tf.keras.callbacks.EarlyStopping(monitor="val_mae", patience= patience, restore_best_weights=True)
@@ -89,10 +139,30 @@ def model_fit(model, train_set, valid_set, epochs, patience, save_to=""):
     return history
 
 def model_evaluate(model, valid_set):
+    """
+    Model evaluation with validation set
+
+    Args:
+    model (object): Model to compile
+    valid_set (Dataframe): Validation dataframe
+    """
     valid_loss, valid_mae, valid_rmse = model.evaluate(valid_set)
     return valid_loss, valid_mae, valid_rmse
 
 def fit_and_evaluate(model, name, columns, train_set, valid_set, learning_rate=0.02, epochs=500, patience = None, force_compilation=False):
+    """
+    Model fitting and evaluation with validation set
+
+    Args:
+    model (object): Model to compile
+    name (str): Model name
+    train_set (Dataframe): Train dataframe
+    valid_set (Dataframe): Validation dataframe
+    learning_rate: Model compilation learning rate. Default=0.02
+    epochs (int): Number of fit epochs. Default 500
+    patience (int): Fitting patience. If None and epochs < 100, patience=epochs. If None and epochs >= 100, patience = 10% epochs
+    force_compilation (bool): If True and model file exists, force model compilation
+    """
 
     time_start = grl.get_datetime()
 
@@ -145,6 +215,13 @@ def train_models(df, columns_array, prediction_interval, epochs):
 
 
 def get_series_columns(df_original, prediction_interval):
+    """
+    Get timeseries width different set of columns
+
+    Args:
+    df_original (DataFrame): Source dataframe
+    prediction_interval: Number of predicted items
+    """
     set_series = {}
     set_columns = {}
 
@@ -163,6 +240,12 @@ def get_series_columns(df_original, prediction_interval):
     return set_series, set_columns
 
 def get_model_info(name):
+    """
+    Return model configuration based on model name (filename)
+
+    Args:
+    name (str): Model name
+    """
 
     str_array = name.split("_")
     model_name = str_array[2]
